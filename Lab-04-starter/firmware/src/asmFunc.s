@@ -14,7 +14,7 @@
 .type nameStr,%gnu_unique_object
     
 /*** STUDENTS: Change the next line to your name!  **/
-nameStr: .asciz "Inigo Montoya"  
+nameStr: .asciz "Levi Franklin"  
 
 .align   /* realign so that next mem allocations are on word boundaries */
  
@@ -71,7 +71,48 @@ asmFunc:
  
     
     /*** STUDENTS: Place your code BELOW this line!!! **************/
-
+   ldr r1, =transaction /* Loads the address of transaction */
+   str r0, [r1] /* Loads the value of transaction into r0 */
+    
+   /* Compares transaction against 1000 */
+   cmp r1, #1000
+   bgt transaction_out_of_bounds /* Branch if greater than 1000 */
+   
+   /* Compares transaction against -1000 */
+   cmp r1, #-1000
+   blt transaction_out_of_bounds /* Branch if less than 1000 */
+   
+   /* If transaction is within bounds */
+   transaction_ok:
+   ldr r1, =balance
+   ldr r2, [r1]
+   
+   adds r3, r2, r0
+   
+   bvs overflow_detected
+   ldr r1, =tmpBalance
+   str r3, [r1]
+   
+   b done
+   
+   /* Overflow */
+   overflow:
+    ldr r1, =we_have_a_problem
+    move r0, #1
+    str r0, [r1]
+   
+    
+   /* If transaction is greater than 1000 or less than -1000 */
+   transaction_out_of_bounds:
+    mov r0, #0
+    str r0, [r1]
+    
+    ldr r1, =we_have_a_problem
+    move r0, #1
+    str r-, [r1]
+    
+    ldr r1, =balance
+    ldr r0, [r1]
     
     /*** STUDENTS: Place your code ABOVE this line!!! **************/
 
